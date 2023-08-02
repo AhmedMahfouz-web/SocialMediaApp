@@ -17,10 +17,15 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    // public $guard = [];
+
     protected $fillable = [
-        'name',
-        'email',
+        'nickname',
+        'imei',
         'password',
+        'gender',
+        'age',
+        'country',
     ];
 
     /**
@@ -42,4 +47,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function tweet()
+    {
+        $this->hasMany(Tweet::class);
+    }
+
+    public function tweetVote()
+    {
+        $this->hasMany(TweetsVote::class);
+    }
+
+    public function comment()
+    {
+        $this->hasMany(Comment::class);
+    }
+
+    public function commentVote()
+    {
+        $this->hasMany(CommentsVote::class);
+    }
+
+    public function chat()
+    {
+        $this->hasMany(Chat::class);
+    }
 }
