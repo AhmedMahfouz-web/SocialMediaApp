@@ -12,54 +12,37 @@ class CommentsVoteController extends Controller
      */
     public function index()
     {
-        //
+        $commentsvote = CommentsVote::all();
+
+        return response()->json($commentsvote);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $commentsvote = CommentsVote::create($request->all());
+
+        return response()->json($commentsvote, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CommentsVote $commentsVote)
+    public function show($id)
     {
-        //
+        $commentsvote = CommentsVote::findOrFail($id);
+
+        return response()->json($commentsvote);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CommentsVote $commentsVote)
+    public function update(Request $request, $id)
     {
-        //
+        $commentsvote = CommentsVote::findOrFail($id);
+        $commentsvote->update($request->all());
+
+        return response()->json($commentsvote);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, CommentsVote $commentsVote)
+    public function destroy($id)
     {
-        //
-    }
+        CommentsVote::destroy($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(CommentsVote $commentsVote)
-    {
-        //
+        return response()->json(null, 204);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tweet;
 use Illuminate\Http\Request;
 
+
 class TweetController extends Controller
 {
     /**
@@ -84,8 +85,31 @@ class TweetController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tweet $tweet)
-    {
-        //
+    public function destroy(Request $request)
+     {
+    $tweet = Tweet::findOrFail($request->id);
+
+    // Check if the tweet belongs to the authenticated user
+    if ($tweet->user_id !== auth()->user()->id) {
+        return response()->json([
+            'error' => 'Unauthorized',
+        ], 401);
+    }
+
+    // Delete the associated file (if any)
+    $file = $tweet->file;
+    if (!empty($file)) {
+        $filePath = public_path('tweet/video/' . $file);
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+    }
+
+    // Delete the tweet
+    $tweet->delete();
+
+    return response()->json([
+        'success' => 'Tweet deleted successfully',
+    ]);
     }
 }
