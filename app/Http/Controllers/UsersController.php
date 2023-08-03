@@ -60,7 +60,7 @@ class UsersController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('nickname', 'imei');
+        $credentials = $request->only('nickname', 'imei', 'password');
 
         if (Auth::guard('api')->once($credentials)) {
             $user = Auth::guard('api')->user();

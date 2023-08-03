@@ -10,16 +10,20 @@ class CommentsVote extends Model
     use HasFactory;
 
 
-    public $guard = [];
+    protected $fillable = [
+        'user_id',
+        'type',
+        'comment_id',
+    ];
 
 
     public function comment()
     {
-        $this->belongsTo(Comment::class);
+        return $this->belongsTo(Comment::class);
     }
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return  $this->belongsTo(User::class);
     }
 }

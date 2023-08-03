@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CommentController extends Controller
 {
@@ -58,8 +59,23 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment)
+    public function destroy(Request $request)
     {
-        //
+        $comment = Comment::find($request->comment_id)->with('vote')->first();
+
+        if ($comment->user_id == auth()->user()->id) {
+            if (File::exists(public_path($comment->file))) {
+                File::delete(public_path($comment->file));
+            }
+            foreach ($comment->vote as $vote) {
+                $vote->delete();
+            }
+            $comment->delete();
+            return response()->json([
+                'message' => 'Deleted Succesfully',
+            ]);
+        }
+
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 }

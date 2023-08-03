@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommentsVoteController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
@@ -23,6 +25,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/tweet/store', [TweetController::class, 'store']);
     Route::get('/tweet/get', [TweetController::class, 'index']);
+
+    Route::post('comment/vote', [CommentsVoteController::class, 'store']);
+    Route::post('comment/delete', [CommentController::class, 'destroy']);
 });
 
 

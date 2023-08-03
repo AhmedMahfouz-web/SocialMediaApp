@@ -14,16 +14,16 @@ class Comment extends Model
 
     public function tweet()
     {
-        $this->belongsTo(Tweet::class);
+        return $this->belongsTo(Tweet::class);
     }
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function vote()
     {
-        $this->hasMany(CommentsVote::class);
+        return $this->hasMany(CommentsVote::class);
     }
 }

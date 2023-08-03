@@ -26,7 +26,7 @@ class Notify extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -35,9 +35,9 @@ class Notify extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->line('The introduction to the notification.')
+            ->action('Notification Action', url('/'))
+            ->line('Thank you for using our application!');
     }
 
     /**
@@ -49,6 +49,13 @@ class Notify extends Notification
     {
         return [
             //
+        ];
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        return [
+            
         ];
     }
 }
