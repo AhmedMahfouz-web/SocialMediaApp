@@ -1,0 +1,126 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+a {
+    text-decoration: none;
+}
+button {
+    outline: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.create-post {
+    direction: rtl;
+    background-color: rgb(255, 255, 255);
+    height: 100vh;
+}
+
+.create-post #fileContainer img {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.create-post #fileContainer video {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.create-post header {
+    height: 7vh;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    position: relative;
+    border-bottom: 1px solid #ccc;
+}
+.create-post header a {
+    color: rgb(24, 23, 23);
+    font-weight: 600;
+}
+.create-post .aria {
+    position: relative;
+    height: 93%;
+}
+.create-post textarea {
+    position: relative;
+    outline: none;
+    border: none;
+    background-color: rgb(15, 153, 153);
+    resize: none;
+    height: 100%;
+    width: 100%;
+    padding: 0.5rem;
+}
+.create-post textarea::placeholder {
+    color: rgba(255, 255, 255, 0.83);
+}
+
+.create-post footer {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.create-post footer .footer-btns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.create-post footer button {
+    border-radius: 50%;
+    background-color: cadetblue;
+    background-color: rgb(27, 87, 87);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0.3rem;
+}
+
+.create-post footer .color-plate {
+    margin-bottom: 0.5rem;
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    overflow: auto;
+    animation: colorPlate 0.1s ease-in-out;
+}
+.create-post footer .color-plate.active {
+    display: flex;
+}
+
+.create-post footer .color-plate button {
+    border: 1px solid #aaa;
+}
+
+.create-post footer .btns {
+    display: flex;
+    gap: 0.5rem;
+}
+.create-post footer button i {
+    color: white;
+}
+
+@keyframes colorPlate {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
