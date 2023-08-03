@@ -14,7 +14,9 @@ class CommentsVoteController extends Controller
      */
     public function index()
     {
-        //
+        $commentsvote = CommentsVote::all();
+
+        return response()->json($commentsvote);
     }
 
     /**
@@ -24,9 +26,6 @@ class CommentsVoteController extends Controller
     {
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $vote = CommentsVote::where(['user_id' => auth()->user()->id, 'comment_id' => $request->comment_id])->first(); // get vote if available
@@ -71,38 +70,6 @@ class CommentsVoteController extends Controller
             }
         }
 
-        return response()->json([null, 204]);
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(CommentsVote $commentsVote)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CommentsVote $commentsVote)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, CommentsVote $commentsVote)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(CommentsVote $commentsVote)
-    {
-        //
-    }
+    
 }

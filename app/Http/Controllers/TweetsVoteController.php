@@ -12,54 +12,43 @@ class TweetsVoteController extends Controller
      */
     public function index()
     {
-        //
+        // Retrieve all votes
+        $votes = TweetsVote::all();
+        return response()->json($votes);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        // Retrieve a specific vote
+        $vote = TweetsVote::find($id);
+        return response()->json($vote);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        // Create a new vote
+        $request = TweetsVote::create([
+            'type' => $request->type,
+            'user_id' => auth()->user()->id,
+            'tweet_id' => $request->tweet_id,
+        ]);
+        return response()->json([
+            'success' => 'Comment added successfully',
+            'tweet_vote' => $request
+        ]);
+    }
+    public function update(Request $request, $id)
+    {
+        // Update an existing vote
+        $vote = TweetsVote::find($id);
+        $vote->update($request->all());
+        return response()->json($vote);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(TweetsVote $tweetsVote)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(TweetsVote $tweetsVote)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, TweetsVote $tweetsVote)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TweetsVote $tweetsVote)
-    {
-        //
+        // Delete a vote
+        $vote = TweetsVote::find($id);
+        $vote->delete();
+        return response()->json(null, 204);
     }
 }
