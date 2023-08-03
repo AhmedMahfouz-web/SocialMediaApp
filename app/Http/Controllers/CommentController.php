@@ -31,7 +31,7 @@ class CommentController extends Controller
             $request->audio->move(public_path('tweet/audio'), $file);
         } else {
             $text = $request->text;
-    }
+        }
 
         $comment = Comment::create([
             'text' => $text,
