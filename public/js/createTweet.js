@@ -1,11 +1,20 @@
+const handleModal = document.getElementById("handleModal");
+
+const chooseImage = document.getElementById("chooseImage");
+const takeImage = document.getElementById("takeImage");
+const cameraSection = document.getElementById("cameraSection");
+const cameraPreview = document.getElementById("cameraPreview");
+
 const writingArea = document.getElementById("writingArea");
 const colorPlateBtns = document.querySelectorAll(".color-plate button");
 const colorPlate = document.querySelector(".color-plate");
 const colorPlateBtn = document.getElementById("plateColorBtn");
 const aria = document.querySelector(".aria");
 
+const modal = document.getElementById("modal");
+
 const fileInput = document.getElementById("fileInput");
-const uploadImageButton = document.getElementById("uploadImageButton");
+// const uploadImageButton = document.getElementById("uploadImageButton");
 const uploadVideoButton = document.getElementById("uploadVideoButton");
 const uploadAudioButton = document.getElementById("uploadAudioButton");
 
@@ -30,10 +39,10 @@ colorPlateBtn.addEventListener("click", () => {
 
 // control the uplaud files
 
-uploadImageButton.addEventListener("click", () => {
-    fileInput.setAttribute("accept", "image/*");
-    fileInput.click();
-});
+// uploadImageButton.addEventListener("click", () => {
+//   fileInput.setAttribute("accept", "image/*");
+//   fileInput.click();
+// });
 uploadVideoButton.addEventListener("click", () => {
     fileInput.setAttribute("accept", "video/*");
     fileInput.click();
@@ -67,8 +76,89 @@ fileInput.addEventListener("change", (e) => {
             fileContainer.innerHTML = "";
             fileContainer.appendChild(mediaElement);
             aria.style.height = "25%";
+            modal.classList.remove("active");
         };
 
         reader.readAsDataURL(file);
+    }
+});
+
+// handle modal
+
+handleModal.addEventListener("click", () => {
+    modal.classList.toggle("active");
+});
+
+chooseImage.addEventListener("click", () => {
+    fileInput.setAttribute("accept", "image/*");
+    fileInput.click();
+});
+
+//
+
+let stream; // Variable to store the camera stream
+
+takeImage.addEventListener("click", () => {
+    document.querySelector(".create-post").style.display = "none";
+    // Check if the browser supports the getUserMedia API
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Request access to the user's camera
+        navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then((mediaStream) => {
+                // Store the camera stream in the variable for later use
+                stream = mediaStream;
+
+                // Display the camera stream in the video element
+                cameraPreview.srcObject = stream;
+                cameraPreview.style.display = "block";
+
+                // Show the capture button
+                const captureButton = document.createElement("button");
+                captureButton.innerText = "Capture";
+                cameraSection.appendChild(captureButton);
+
+                // Listen for a click event on the capture button
+                captureButton.addEventListener("click", () => {
+                    document.querySelector(".create-post").style.display =
+                        "block";
+                    // Create a canvas element to capture the image
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+                    canvas.width = cameraPreview.videoWidth;
+                    canvas.height = cameraPreview.videoHeight;
+
+                    // Draw the current frame from the video element onto the canvas
+                    context.drawImage(
+                        cameraPreview,
+                        0,
+                        0,
+                        canvas.width,
+                        canvas.height
+                    );
+
+                    // Create an image element to display the captured image
+                    const capturedImage = new Image();
+                    capturedImage.src = canvas.toDataURL("image/png");
+
+                    // Append the captured image to the image container
+                    fileContainer.innerHTML = "";
+                    fileContainer.appendChild(capturedImage);
+                    aria.style.height = "25%";
+                    stream.getTracks().forEach((track) => {
+                        track.stop();
+                    });
+
+                    // Remove the capture button
+                    captureButton.remove();
+                    cameraPreview.style.display = "none";
+                    modal.classList.remove("active");
+                });
+            })
+            .catch((error) => {
+                console.error("Error accessing camera:", error);
+            });
+    } else {
+        console.error("getUserMedia is not supported by this browser.");
     }
 });
