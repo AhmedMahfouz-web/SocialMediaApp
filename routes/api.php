@@ -28,6 +28,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('comment/vote', [CommentsVoteController::class, 'store']);
     Route::post('comment/delete', [CommentController::class, 'destroy']);
+
+        Route::get('chat/get', [ChatController::class , 'index']);
+    Route::post('chat',[ChatController::class , 'store']);
+
+    Route::post('chats/receiver-messages', [ChatController::class ,'getReceiverMessages']);
 });
 
 
