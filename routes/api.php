@@ -1,8 +1,10 @@
 <?php
+
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentsVoteController;
 use App\Http\Controllers\TweetController;
+use App\Http\Controllers\TweetsVoteController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,15 +26,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/tweet/store', [TweetController::class, 'store']);
+    Route::post('/tweet/vote', [TweetsVoteController::class, 'store']);
     Route::get('/tweet/get', [TweetController::class, 'index']);
 
+    Route::post('comment/store', [CommentsController::class, 'store']);
     Route::post('comment/vote', [CommentsVoteController::class, 'store']);
     Route::post('comment/delete', [CommentController::class, 'destroy']);
 
-        Route::get('chat/get', [ChatController::class , 'index']);
-    Route::post('chat',[ChatController::class , 'store']);
+    Route::get('chat/get', [ChatController::class, 'index']);
+    Route::post('chat', [ChatController::class, 'store']);
 
-    Route::post('chats/receiver-messages', [ChatController::class ,'getReceiverMessages']);
+    Route::post('chats/receiver-messages', [ChatController::class, 'getReceiverMessages']);
 });
 
 

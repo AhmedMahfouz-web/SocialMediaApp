@@ -10,7 +10,11 @@ class TweetsVote extends Model
     use HasFactory;
 
 
-    public $guard = [];
+    protected $fillable = [
+        'user_id',
+        'tweet_id',
+        'type'
+    ];
 
     public function tweet()
     {
