@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tweets', function (Blueprint $table) {
+        Schema::create('delete_tweets', function (Blueprint $table) {
             $table->id();
             $table->string('text')->nullable();
             $table->string('color');
             $table->smallInteger('vote_up')->default(0);
             $table->smallInteger('vote_down')->default(0);
             $table->string('location');
-            $table->smallInteger('is_boosted')->nullable();
             $table->string('file')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tweets');
+        //
     }
 };
