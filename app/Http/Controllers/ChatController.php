@@ -10,7 +10,6 @@ class ChatController extends Controller
     /**
      * Display a listing of the resource.
      */
-   
     public function index(Request $request)
     {
        // Retrieve chat messages
@@ -52,6 +51,32 @@ class ChatController extends Controller
 
     return response()->json($messages);
 }
+// public function sendMessage(Request $request)
+// {
+//     $sender_id = $request->sender_id;
+//     $reveiver_id = $request->reveiver_id;
+//     $message = $request->message;
+//     $tweetId = $request->tweet_id;
+
+//     $chat = Chat::create([
+//         'sender_id' => $sender_id,
+//         'receiver_id' => $reveiver_id,
+//         'message' => $message,
+//         'tweet_id' => $tweetId,
+//     ]);
+
+//     return response()->json($chat, 201);
+// }
+
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
     /**
      * Display the specified resource.
      */

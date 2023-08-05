@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('sender_id');
             $table->foreign('sender_id')->references('id')->on('users');
             $table->unsignedBigInteger('reveiver_id');
-            $table->foreign('reveiver_id')->references('id')->on('users');
+            $table->foreign('receiver_id')->references('id')->on('users');
             $table->unsignedBigInteger('tweet_id');
             $table->foreign('tweet_id')->references('id')->on('tweets');
             $table->timestamps();
