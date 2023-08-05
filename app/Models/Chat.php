@@ -10,20 +10,22 @@ class Chat extends Model
     use HasFactory;
 
 
-    public $guard = [];
+    protected $fillable = ['sender_id', 'reveiver_id', 'message', 'tweet_id'];
+
+
 
     public function tweet()
     {
-        $this->belongsTo(Tweet::class);
+        return $this->belongsTo(Tweet::class);
     }
 
     public function sender()
     {
-        $this->belongsTo(User::class, 'user_id', 'sender_id');
+        return $this->belongsTo(User::class, 'sender_id');
     }
 
     public function receiver()
     {
-        $this->belongsTo(User::class, 'user_id', 'receiver_id');
+        return $this->belongsTo(User::class, 'reveiver_id');
     }
 }

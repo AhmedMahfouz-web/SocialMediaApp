@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentsVoteController;
 use App\Http\Controllers\TweetController;
@@ -27,7 +28,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tweet/get', [TweetController::class, 'index']);
 
     Route::post('comment/vote', [CommentsVoteController::class, 'store']);
+    Route::post('comment/store', [CommentController::class, 'store']);
     Route::post('comment/delete', [CommentController::class, 'destroy']);
+
+    Route::get('chat/get', [ChatController::class , 'index']);
+    Route::post('chat',[ChatController::class , 'store']);
+
+    Route::post('chats/receiver-messages', [ChatController::class ,'getReceiverMessages']);
+
 });
 
 

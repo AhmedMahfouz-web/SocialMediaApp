@@ -10,7 +10,17 @@ class Comment extends Model
     use HasFactory;
 
 
-    public $guard = [];
+    protected $fillable=[
+        'id',
+        'text',
+        'user_id',
+        'tweet_id',
+        'is_boosted',
+        'location',
+        'file',
+        'vote_up',
+        'vote_down',
+    ];
 
     public function tweet()
     {

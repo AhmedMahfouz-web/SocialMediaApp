@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use App\Jobs\DeleteCommentJob;
 
 class CommentController extends Controller
 {
@@ -21,7 +22,7 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $file = null;
-        // $text = null;
+        $text = null;
         if (!empty($request->video)) {
             $file = auth()->user()->id . time() . '.' . $request->video->extension();
 
@@ -83,6 +84,13 @@ class CommentController extends Controller
                 'message' => 'Deleted Succesfully',
             ]);
         }
+        $comment_id = $request->comment_id;
+
+        DeleteCommentJob::dispatch($comment_id)->delay(now()->addSeconds(30));
+
+        return response()->json([
+            'message' => 'Deletion scheduled successfully.',
+        ], 200);
 
         return response()->json(['error' => 'Unauthorized'], 401);
     }
