@@ -64,7 +64,6 @@ class TweetsVoteController extends Controller
                 }
             }
         } else { //if not available
-
             $vote = TweetsVote::create([ // create new vote
                 'user_id' => auth()->user()->id,
                 'tweet_id' => $request->tweet_id,

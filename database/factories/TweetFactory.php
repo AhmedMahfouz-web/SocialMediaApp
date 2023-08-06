@@ -18,8 +18,8 @@ class TweetFactory extends Factory
     {
         return [
             'text' => fake()->text,
-            'vote_up' => rand(0, 15),
-            'vote_down' => rand(0, 15),
+            'vote_up' => 0,
+            'vote_down' => 0,
             'location' => fake()->address,
             'user_id' => 1,
             'color' => fake()->randomElement(['blue', 'red', 'yellow', 'black', 'white']),

@@ -10,5 +10,5 @@ class Boost extends Model
     use HasFactory;
 
 
-    public $guard = [];
+    protected $fillable = ['name', 'desc', 'price', 'discount'];
 }
