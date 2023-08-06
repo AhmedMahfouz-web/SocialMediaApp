@@ -17,9 +17,6 @@ return new class extends Migration
             $table->smallInteger('vote_up');
             $table->smallInteger('vote_down');
             $table->string('location');
-            $table->string('town');
-            $table->string('city');
-            $table->string('country');
             $table->string('file')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');

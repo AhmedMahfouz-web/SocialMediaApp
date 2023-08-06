@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\DeleteTweetJob;
+use App\Models\Tweet;
 use App\Models\TweetsVote;
 use Illuminate\Http\Request;
 
@@ -39,12 +40,28 @@ class TweetsVoteController extends Controller
 
 
         $vote = TweetsVote::where(['user_id' => auth()->user()->id, 'tweet_id' => $request->tweet_id])->first(); // get vote if available
+        $tweet = Tweet::where('id', $request->tweet_id)->first();
         if (!empty($vote)) { // check if available
             if ($vote->type == $request->type) { // check if user trying to remove the vote
                 $vote->delete();
+
+                $tweet->update([
+                    'vote_' . $request->type => 'vote' . $request->type - 1,
+                ]);
                 return response()->json(['up', 201]);
             } else { // checl if the user wants to change the type of vote
                 $vote->update(['type' => $request->type]);
+                if ($request->type == 'up') {
+                    $tweet->update([
+                        'vote_up' => $tweet->vote_up - 1,
+                        'vote_down' => $tweet->vote_down + 1,
+                    ]);
+                } else {
+                    $tweet->update([
+                        'vote_up' => $tweet->vote_up + 1,
+                        'vote_down' => $tweet->vote_down - 1,
+                    ]);
+                }
             }
         } else { //if not available
 
@@ -52,6 +69,9 @@ class TweetsVoteController extends Controller
                 'user_id' => auth()->user()->id,
                 'tweet_id' => $request->tweet_id,
                 'type' => $request->type,
+            ]);
+            $tweet->update([
+                'vote_' . $request->type => 'vote' . $request->type + 1,
             ]);
         }
 
@@ -77,6 +97,9 @@ class TweetsVoteController extends Controller
 
         return response()->json([$request->type, 201]);
     }
+
+
+
     public function update(Request $request, $id)
     {
         // Update an existing vote

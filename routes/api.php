@@ -31,7 +31,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('comment/store', [CommentsController::class, 'store']);
     Route::post('comment/vote', [CommentsVoteController::class, 'store']);
-    Route::post('comment/store', [CommentController::class, 'store']);
     Route::post('comment/delete', [CommentController::class, 'destroy']);
 
     Route::get('chat/get', [ChatController::class, 'index']);

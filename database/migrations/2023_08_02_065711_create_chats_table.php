@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('read_at');
             $table->unsignedBigInteger('sender_id');
             $table->foreign('sender_id')->references('id')->on('users');
-            $table->unsignedBigInteger('reveiver_id');
+            $table->unsignedBigInteger('receiver_id');
             $table->foreign('receiver_id')->references('id')->on('users');
             $table->unsignedBigInteger('tweet_id');
             $table->foreign('tweet_id')->references('id')->on('tweets');

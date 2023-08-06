@@ -18,7 +18,7 @@ class Comment extends Model
         'is_boosted',
         'location',
         'file',
-        'vote_up',
+        'vote_up',  
         'vote_down',
     ];
 
