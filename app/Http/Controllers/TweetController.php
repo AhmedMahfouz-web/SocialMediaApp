@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Tweet;
+use App\Models\TweetsVote;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 
 class TweetController extends Controller
 {
@@ -13,7 +17,7 @@ class TweetController extends Controller
      */
     public function index()
     {
-        $tweets = Tweet::latest();
+        $tweets = Tweet::with('comments')->latest()->get();
 
         return response()->json([
             'tweets' => $tweets,
@@ -86,30 +90,114 @@ class TweetController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request)
-     {
-    $tweet = Tweet::findOrFail($request->id);
+    {
+        $tweet = Tweet::findOrFail($request->id);
 
-    // Check if the tweet belongs to the authenticated user
-    if ($tweet->user_id !== auth()->user()->id) {
-        return response()->json([
-            'error' => 'Unauthorized',
-        ], 401);
-    }
+        if ($request->ban == null) {
+            // Check if the tweet belongs to the authenticated user
+            if ($tweet->user_id !== auth()->user()->id) {
+                return response()->json([
+                    'error' => 'Unauthorized',
+                ], 401);
+            }
+        }
 
-    // Delete the associated file (if any)
-    $file = $tweet->file;
-    if (!empty($file)) {
-        $filePath = public_path('tweet/video/' . $file);
-        if (file_exists($filePath)) {
-            unlink($filePath);
+        // Delete the associated file (if any)
+        $file = $tweet->file;
+        if (!empty($file)) {
+            $filePath = public_path('tweet/video/' . $file);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        //Get Votes and Delete it.
+        $votes = TweetsVote::where('tweet_id', $tweet->id)->get();
+        foreach ($votes as $vote) {
+            $vote->delete();
+        }
+
+        // Get Comments with Their Votes and Delete them all and Delete file (if any).
+        $comments = Comment::where('tweet_id', $tweet->id)->with('votes')->get();
+        foreach ($comments as $comment) {
+            //Delete file (if any).
+            $commentFile = $comment->file;
+            if (!empty($commentFile)) {
+                $filePath = public_path('tweet/video/' . $file);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+
+            // Delete Comments votes.
+            foreach ($comment->votes as $vote) {
+                $vote->delete();
+            }
+
+            $comment->delete();
+        }
+
+        // Delete the tweet
+        $tweet->delete();
+
+        if ($request->ban == null) {
+            return response()->json([
+                'success' => 'Tweet deleted successfully',
+            ]);
         }
     }
 
-    // Delete the tweet
-    $tweet->delete();
+    public function destroy_and_ban(Request $request)
+    {
+        $user_id = Tweet::select('user_id')->where('id', $request->id)->first();
+        $user = User::find($user_id->user_id);
+        $votes = TweetsVote::where('tweet_id', $request->id)->get();
+        $vote_up = 0;
+        $vote_down = 0;
+        foreach ($votes as $vote) {
+            $vote->type == 'up' ? $vote_up += 1 : $vote_down += 1;
+        }
+        if ($vote_down != 0) {
+            if ($vote_up / $vote_down < 1 / 3 && $vote_up / $vote_down != 0 || $vote_up == 0 && $vote_down > 2) {
 
-    return response()->json([
-        'success' => 'Tweet deleted successfully',
-    ]);
+                $this->destroy($request);
+                DB::table('ban_user')->insert([
+                    'user_id' => $user_id->user_id,
+                    'created_at' => now(),
+                ]);
+            }
+        }
+
+        $bans = DB::table('ban_user')->where('user_id', $user_id->user_id)->get();
+        $ban_today = 0;
+        foreach ($bans as $ban) {
+            $date = Carbon::parse($ban->created_at);
+            $currentDate = Carbon::now();
+
+            $diff = $date->diffInDays($currentDate);
+
+            if ($diff <= 0) {
+                $ban_today = $ban_today + 1;
+            }
+        };
+
+        if ($ban_today >= 7) {
+            if ($user->ban == 0) {
+                $ban = 1;
+                $ban_date = Carbon::now()->addDays(7);
+            } elseif ($user->ban == 1) {
+                $ban = 2;
+                $ban_date = Carbon::now()->addDays(30);
+            } elseif ($user->ban == 2) {
+                $ban = 3;
+                $ban_date = Carbon::now()->addDays(30000);
+            }
+            $user->update([
+                'ban' => $ban,
+                'ban_end' => $ban_date,
+            ]);
+        }
+
+        return response()->json(['Success' => 'User is listed on ban users'], 201);
     }
 }

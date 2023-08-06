@@ -21,7 +21,8 @@ class TweetFactory extends Factory
             'vote_up' => rand(0, 15),
             'vote_down' => rand(0, 15),
             'location' => fake()->address,
-            'user_id' => rand(1, 25),
+            'user_id' => 1,
+            'color' => fake()->randomElement(['blue', 'red', 'yellow', 'black', 'white']),
         ];
     }
 }

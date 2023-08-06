@@ -22,7 +22,7 @@ class CommentFactory extends Factory
             'vote_down' => rand(0, 15),
             'location' => fake()->address,
             'user_id' => rand(1, 25),
-            'tweet_id' => rand(0, 25),
+            'tweet_id' => rand(1, 25),
         ];
     }
 }

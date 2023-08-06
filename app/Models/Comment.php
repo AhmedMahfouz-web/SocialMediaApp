@@ -10,7 +10,7 @@ class Comment extends Model
     use HasFactory;
 
 
-    protected $fillable=[
+    protected $fillable = [
         'id',
         'text',
         'user_id',
@@ -18,7 +18,7 @@ class Comment extends Model
         'is_boosted',
         'location',
         'file',
-        'vote_up',  
+        'vote_up',
         'vote_down',
     ];
 
@@ -32,7 +32,7 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function vote()
+    public function votes()
     {
         return $this->hasMany(CommentsVote::class);
     }

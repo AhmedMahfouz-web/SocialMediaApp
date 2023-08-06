@@ -13,6 +13,7 @@ class Tweet extends Model
         'text',
         'file',
         'location',
+        'color',
         'user_id',
         'vote_up',
         'vote_down',
@@ -21,21 +22,21 @@ class Tweet extends Model
 
     public function user()
     {
-        $this->belongsTo(User::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function vote()
+    public function votes()
     {
-        $this->hasMany(TweetsVote::class);
+        return $this->hasMany(TweetsVote::class);
     }
 
-    public function comment()
+    public function comments()
     {
-        $this->hasMany(Comment::class);
+        return $this->hasMany(Comment::class);
     }
 
-    public function chat()
+    public function chats()
     {
-        $this->hasMany(Chat::class);
+        return $this->hasMany(Chat::class);
     }
 }

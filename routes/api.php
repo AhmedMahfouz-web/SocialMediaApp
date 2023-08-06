@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tweet/store', [TweetController::class, 'store']);
     Route::post('/tweet/vote', [TweetsVoteController::class, 'store']);
     Route::get('/tweet/get', [TweetController::class, 'index']);
+    Route::post('/tweet/delete', [TweetController::class, 'destroy']);
+    Route::post('/tweet/delete_ban', [TweetController::class, 'destroy_and_ban']);
 
     Route::post('comment/store', [CommentsController::class, 'store']);
     Route::post('comment/vote', [CommentsVoteController::class, 'store']);

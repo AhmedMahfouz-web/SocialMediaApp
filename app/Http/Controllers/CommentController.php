@@ -70,7 +70,7 @@ class CommentController extends Controller
      */
     public function destroy(Request $request)
     {
-        $comment = Comment::find($request->comment_id)->with('vote')->first();
+        $comment = Comment::find($request->comment_id)->with('votes')->first();
 
         if ($comment->user_id == auth()->user()->id) {
             if (File::exists(public_path($comment->file))) {
@@ -84,13 +84,6 @@ class CommentController extends Controller
                 'message' => 'Deleted Succesfully',
             ]);
         }
-        $comment_id = $request->comment_id;
-
-        DeleteCommentJob::dispatch($comment_id)->delay(now()->addSeconds(30));
-
-        return response()->json([
-            'message' => 'Deletion scheduled successfully.',
-        ], 200);
 
         return response()->json(['error' => 'Unauthorized'], 401);
     }

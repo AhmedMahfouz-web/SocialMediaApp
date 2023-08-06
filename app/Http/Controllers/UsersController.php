@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -65,6 +66,16 @@ class UsersController extends Controller
         if (Auth::guard('api')->once($credentials)) {
             $user = Auth::guard('api')->user();
             $token = $user->createToken('auth_token')->plainTextToken;
+
+            // Check if User is banned
+            $date = Carbon::parse($user->ban_end);
+            $currentDate = Carbon::now();
+
+            $diff = $currentDate->diffInDays($date);
+            if ($diff != 0) {
+                return response()->json(['message' => 'You\'re banned for ' . $diff . ' days']);
+            }
+
             return response()->json([
                 'token' => $token,
                 'user' => $user

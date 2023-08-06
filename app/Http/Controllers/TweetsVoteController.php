@@ -46,20 +46,20 @@ class TweetsVoteController extends Controller
                 $vote->delete();
 
                 $tweet->update([
-                    'vote_' . $request->type => 'vote' . $request->type - 1,
+                    'vote_' . $request->type => $tweet['vote_' . $request->type] - 1,
                 ]);
-                return response()->json(['up', 201]);
+                return response()->json(['deleted', 201]);
             } else { // checl if the user wants to change the type of vote
                 $vote->update(['type' => $request->type]);
                 if ($request->type == 'up') {
                     $tweet->update([
-                        'vote_up' => $tweet->vote_up - 1,
-                        'vote_down' => $tweet->vote_down + 1,
+                        'vote_up' => $tweet->vote_up + 1,
+                        'vote_down' => $tweet->vote_down - 1,
                     ]);
                 } else {
                     $tweet->update([
-                        'vote_up' => $tweet->vote_up + 1,
-                        'vote_down' => $tweet->vote_down - 1,
+                        'vote_up' => $tweet->vote_up - 1,
+                        'vote_down' => $tweet->vote_down + 1,
                     ]);
                 }
             }
@@ -71,7 +71,7 @@ class TweetsVoteController extends Controller
                 'type' => $request->type,
             ]);
             $tweet->update([
-                'vote_' . $request->type => 'vote' . $request->type + 1,
+                'vote_' . $request->type => $tweet['vote_' . $request->type] + 1,
             ]);
         }
 
@@ -84,18 +84,19 @@ class TweetsVoteController extends Controller
             }
 
             if ($vote_down != 0) {
-                if ($vote_up / $vote_down < 1 / 3 && $vote_up / $vote_down != 0) { // check the ratio to delete if not qualified to rules
+                if ($vote_up / $vote_down < 1 / 3 && $vote_up / $vote_down != 0 || $vote_up == 0 && $vote_down > 2) { // check the ratio to delete if not qualified to rules
 
-                    DeleteTweetJob::dispatch($request->tweet_id)->delay(now()->addSeconds(60));
+                    // DeleteTweetJob::dispatch($request->tweet_id)->delay(now()->addSeconds(60));
 
                     return response()->json([
                         'message' => 'Deletion scheduled successfully.',
+                        'delete' => true,
                     ]);
                 }
             }
         }
 
-        return response()->json([$request->type, 201]);
+        return response()->json(['Changed or Added', 201]);
     }
 
 

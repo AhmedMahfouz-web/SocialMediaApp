@@ -76,7 +76,7 @@ private function handleDownVote($commentId)
             File::delete(public_path($comment->file));
         }
 
-        $comment->delete();
+        // $comment->delete();
         DeleteCommentJob::dispatch($commentId)->delay(now()->addSeconds(60));
         return response()->json([
             'message' => 'This Comment has been deleted by our system',

@@ -37,14 +37,14 @@ class DeleteTweetJob implements ShouldQueue
         $votes = TweetsVote::where('tweet_id', $this->tweet_id)->latest()->get();
         $comments = Comment::where('tweet_id', $this->tweet_id)->with('votes')->get();
 
-        if ($tweet) {
-            $vote_up = 0;
-            $vote_down = 0;
-            foreach ($votes as $vote) {
-                $vote->type == 'up' ? $vote_up += 1 : $vote_down += 1;
-            }
-            if ($vote_down != 0) {
-                if ($vote_up / $vote_down < 1 / 3 && $vote_up / $vote_down != 0) {
+            if ($tweet) {
+                $vote_up = 0;
+                $vote_down = 0;
+                foreach ($votes as $vote) {
+                    $vote->type == 'up' ? $vote_up += 1 : $vote_down += 1;
+                }
+                if ($vote_down != 0) {
+                    if ($vote_up / $vote_down < 1 / 3 && $vote_up / $vote_down != 0) {
                     foreach ($votes as $vote) {
                         $vote->delete();
                     }
