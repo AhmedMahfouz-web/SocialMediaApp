@@ -46,7 +46,7 @@ class TweetsVoteController extends Controller
                 $vote->delete();
 
                 $tweet->update([
-                    'vote_' . $request->type => 'vote' . $request->type - 1,
+                    'vote_' . $request->type => ['vote_' . $request->type] - 1,
                 ]);
                 return response()->json(['up', 201]);
             } else { // checl if the user wants to change the type of vote
@@ -64,14 +64,13 @@ class TweetsVoteController extends Controller
                 }
             }
         } else { //if not available
-
             $vote = TweetsVote::create([ // create new vote
                 'user_id' => auth()->user()->id,
                 'tweet_id' => $request->tweet_id,
                 'type' => $request->type,
             ]);
             $tweet->update([
-                'vote_' . $request->type => 'vote' . $request->type + 1,
+                'vote_' . $request->type => $tweet['vote_' . $request->type] + 1,
             ]);
         }
 

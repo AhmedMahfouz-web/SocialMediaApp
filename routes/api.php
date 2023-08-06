@@ -6,6 +6,7 @@ use App\Http\Controllers\CommentsVoteController;
 use App\Http\Controllers\TweetController;
 use App\Http\Controllers\TweetsVoteController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\BoostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tweet/store', [TweetController::class, 'store']);
     Route::post('/tweet/vote', [TweetsVoteController::class, 'store']);
     Route::get('/tweet/get', [TweetController::class, 'index']);
+    Route::post('/tweet/delete',[TweetController::class ,'destroy']);
 
     Route::post('comment/store', [CommentsController::class, 'store']);
     Route::post('comment/vote', [CommentsVoteController::class, 'store']);
@@ -42,3 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('auth/register', [UsersController::class, 'store']);
 Route::post('/login', [UsersController::class, 'login']);
+
+Route::post('boost/store' ,[BoostController::class ,'store']);
+Route::post('boost/show' ,[BoostController::class ,'show']);
+
