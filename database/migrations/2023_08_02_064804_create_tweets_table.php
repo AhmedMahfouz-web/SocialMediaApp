@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('color');
             $table->smallInteger('vote_up')->default(0);
             $table->smallInteger('vote_down')->default(0);
-            $table->string('location');
+            $table->string('country');
+            $table->string('longitude');
+            $table->string('latitude');
             $table->smallInteger('is_boosted')->nullable();
             $table->string('file')->nullable();
             $table->unsignedBigInteger('user_id');

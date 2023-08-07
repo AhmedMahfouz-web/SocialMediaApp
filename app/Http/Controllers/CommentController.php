@@ -50,11 +50,11 @@ class CommentController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function get_comments($id)
     {
-        // $comment = Comment::findOrFail($id);
+        $comments = Comment::where('tweet_id', $id)->get();
 
-        // return response()->json($comment);
+        return response()->json($comments);
     }
 
     public function update(Request $request, $id)
@@ -70,13 +70,13 @@ class CommentController extends Controller
      */
     public function destroy(Request $request)
     {
-        $comment = Comment::find($request->comment_id)->with('votes')->first();
+        $comment = Comment::with('votes')->find($request->comment_id);
 
         if ($comment->user_id == auth()->user()->id) {
             if (File::exists(public_path($comment->file))) {
                 File::delete(public_path($comment->file));
             }
-            foreach ($comment->vote as $vote) {
+            foreach ($comment->votes as $vote) {
                 $vote->delete();
             }
             $comment->delete();

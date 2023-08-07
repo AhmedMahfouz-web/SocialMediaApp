@@ -20,7 +20,9 @@ class TweetFactory extends Factory
             'text' => fake()->text,
             'vote_up' => 0,
             'vote_down' => 0,
-            'location' => fake()->address,
+            'longitude' => fake()->latitude(-90, 90),
+            'latitude' => fake()->latitude(-90, 90),
+            'country' => 'Saudi Arabia',
             'user_id' => 1,
             'color' => fake()->randomElement(['blue', 'red', 'yellow', 'black', 'white']),
         ];

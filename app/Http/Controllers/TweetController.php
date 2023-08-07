@@ -9,15 +9,27 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class TweetController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tweets = Tweet::with('comments')->latest()->get();
+        $haversine = "(
+    6371 * acos(
+        cos(radians(" . $request->latitude . "))
+        * cos(radians(`latitude`))
+        * cos(radians(`longitude`) - radians(" . $request->longitude . "))
+        + sin(radians(" . $request->latitude . ")) * sin(radians(`latitude`))
+    )
+)";
+        $tweets = Tweet::select('*')->where('country', $request->country)
+            ->selectRaw("$haversine AS distance")
+            ->orderby("distance", "desc")
+            ->get();
 
         return response()->json([
             'tweets' => $tweets,
@@ -53,6 +65,7 @@ class TweetController extends Controller
             'text' => $text,
             'location' => $request->location,
             'file' => $file,
+            'color' => $request->color,
             'user_id' => auth()->user()->id
         ]);
 
@@ -119,24 +132,25 @@ class TweetController extends Controller
 
         // Get Comments with Their Votes and Delete them all and Delete file (if any).
         $comments = Comment::where('tweet_id', $tweet->id)->with('votes')->get();
-        foreach ($comments as $comment) {
-            //Delete file (if any).
-            $commentFile = $comment->file;
-            if (!empty($commentFile)) {
-                $filePath = public_path('tweet/video/' . $file);
-                if (file_exists($filePath)) {
-                    unlink($filePath);
+        if (!empty($comments)) {
+            foreach ($comments as $comment) {
+                //Delete file (if any).
+                $commentFile = $comment->file;
+                if (!empty($commentFile)) {
+                    $filePath = public_path('tweet/video/' . $file);
+                    if (file_exists($filePath)) {
+                        unlink($filePath);
+                    }
                 }
-            }
 
-            // Delete Comments votes.
-            foreach ($comment->votes as $vote) {
-                $vote->delete();
-            }
+                // Delete Comments votes.
+                foreach ($comment->votes as $vote) {
+                    $vote->delete();
+                }
 
-            $comment->delete();
+                $comment->delete();
+            }
         }
-
         // Delete the tweet
         $tweet->delete();
 
@@ -166,6 +180,8 @@ class TweetController extends Controller
                     'created_at' => now(),
                 ]);
             }
+        } else {
+            return response()->json('faild');
         }
 
         $bans = DB::table('ban_user')->where('user_id', $user_id->user_id)->get();

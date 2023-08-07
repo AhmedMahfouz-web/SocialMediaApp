@@ -28,12 +28,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/tweet/store', [TweetController::class, 'store']);
     Route::post('/tweet/vote', [TweetsVoteController::class, 'store']);
-    Route::get('/tweet/get', [TweetController::class, 'index']);
+    Route::post('/tweet/get', [TweetController::class, 'index']);
     Route::post('/tweet/delete', [TweetController::class, 'destroy']);
     Route::post('/tweet/delete_ban', [TweetController::class, 'destroy_and_ban']);
 
-    Route::post('comment/store', [CommentsController::class, 'store']);
+    Route::post('comment/store', [CommentController::class, 'store']);
     Route::post('comment/vote', [CommentsVoteController::class, 'store']);
+    Route::get('comment/get/{id}', [CommentController::class, 'get_comments']);
     Route::post('comment/delete', [CommentController::class, 'destroy']);
 
     Route::get('chat/get', [ChatController::class, 'index']);
@@ -46,6 +47,5 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('auth/register', [UsersController::class, 'store']);
 Route::post('/login', [UsersController::class, 'login']);
 
-Route::post('boost/store' ,[BoostController::class ,'store']);
-Route::post('boost/show' ,[BoostController::class ,'show']);
-
+Route::post('boost/store', [BoostController::class, 'store']);
+Route::post('boost/show', [BoostController::class, 'show']);
