@@ -12,7 +12,9 @@ class Tweet extends Model
     protected $fillable = [
         'text',
         'file',
-        'location',
+        'latitude',
+        'longitude',
+        'country',
         'color',
         'user_id',
         'vote_up',

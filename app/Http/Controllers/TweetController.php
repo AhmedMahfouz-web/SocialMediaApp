@@ -26,9 +26,20 @@ class TweetController extends Controller
         + sin(radians(" . $request->latitude . ")) * sin(radians(`latitude`))
     )
 )";
-        $tweets = Tweet::select('*')->where('country', $request->country)
+        $tweets = Tweet::select('*')
+           ->where('country', $request->country)
+            ->where(function($query)use($request)){
+                if(!empty(request->hashtag)){
+                     $query->where('hashtags','like','%'.$request->hashtag .'%');
+                }
+                if(!empty($request->user)){
+                    $query->where('user_id',$request->user);
+                }
+            })
             ->selectRaw("$haversine AS distance")
-            ->orderby("distance", "desc")
+            ->latest()
+            ->orderby("created_at", "desc")
+            // ->groupby('id')  
             ->get();
 
         return response()->json([
@@ -63,10 +74,12 @@ class TweetController extends Controller
 
         $tweet = Tweet::create([
             'text' => $text,
-            'location' => $request->location,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'country' => $request->country,
             'file' => $file,
             'color' => $request->color,
-            'user_id' => auth()->user()->id
+            'user_id' => auth()->user()->id,
         ]);
 
         return response()->json([
@@ -174,7 +187,7 @@ class TweetController extends Controller
         if ($vote_down != 0) {
             if ($vote_up / $vote_down < 1 / 3 && $vote_up / $vote_down != 0 || $vote_up == 0 && $vote_down > 2) {
 
-                $this->destroy($request);
+                $deleted = $this->destroy($request);
                 DB::table('ban_user')->insert([
                     'user_id' => $user_id->user_id,
                     'created_at' => now(),
